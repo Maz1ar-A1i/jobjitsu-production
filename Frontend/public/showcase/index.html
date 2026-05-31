@@ -1,0 +1,2513 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>JobJitsu — Social Media Reel Showcase</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Manrope:wght@800&family=Space+Grotesk:wght@500;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet" />
+  
+  <style>
+    /* ===== RESET & BASE ===== */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #03070f;
+      --surface: #0a111f;
+      --surface-variant: #152035;
+      --primary: #c3c0ff;
+      --primary-container: #4f46e5;
+      --secondary: #00f0ff; /* Neon Cyan */
+      --tertiary: #ff007f; /* Neon Magenta */
+      --success: #39ff14; /* Neon Green */
+      --warning: #ffb700;
+      --on-surface: #f1f5f9;
+      --on-surface-variant: #64748b;
+    }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: var(--bg);
+      font-family: 'Space Grotesk', 'Inter', sans-serif;
+      color: var(--on-surface);
+    }
+
+    /* ===== PERSPECTIVE GRID BACKGROUND ===== */
+    #showcase-wrapper {
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    /* Blurred Cinema Backdrop */
+    .cinema-backdrop {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+      background-size: cover;
+      background-position: center;
+      filter: blur(80px) brightness(0.25) saturate(1.8);
+      transform: scale(1.1);
+      transition: background-image 1.2s ease;
+      opacity: 0.85;
+    }
+
+    .retro-grid-overlay {
+      position: absolute;
+      inset: 0;
+      background-image: 
+        linear-gradient(rgba(0, 240, 255, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 240, 255, 0.03) 1px, transparent 1px);
+      background-size: 50px 50px;
+      perspective: 500px;
+      transform: rotateX(60deg) translateY(-30%);
+      z-index: 1;
+      opacity: 0.4;
+      pointer-events: none;
+    }
+
+    /* ===== SMARTPHONE CONTAINER (9:16) ===== */
+    .phone-simulator-wrap {
+      position: relative;
+      z-index: 10;
+      width: 100%;
+      max-width: 410px;
+      height: 92vh;
+      max-height: 820px;
+      perspective: 1200px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.1s ease-out;
+    }
+
+    .phone-frame {
+      width: 100%;
+      height: 100%;
+      border-radius: 44px;
+      border: 8px solid #1a2235;
+      background: #060c16;
+      box-shadow: 
+        0 25px 60px rgba(0,0,0,0.8),
+        0 0 40px rgba(0, 240, 255, 0.15),
+        inset 0 0 15px rgba(255, 255, 255, 0.05);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      transform-style: preserve-3d;
+      transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+    }
+
+    /* Screen shake transition */
+    .phone-frame.shake {
+      animation: screenShake 0.4s ease-in-out;
+    }
+    @keyframes screenShake {
+      0%, 100% { transform: translateX(0) translateY(0); }
+      15% { transform: translateX(-8px) translateY(4px) rotate(-1deg); }
+      30% { transform: translateX(8px) translateY(-4px) rotate(1deg); }
+      45% { transform: translateX(-6px) translateY(2px) rotate(-0.5deg); }
+      60% { transform: translateX(6px) translateY(-2px) rotate(0.5deg); }
+      75% { transform: translateX(-3px) translateY(1px); }
+      90% { transform: translateX(3px) translateY(-1px); }
+    }
+
+    /* Glitch displacement filter */
+    .phone-frame.glitch-active {
+      animation: glitchEffect 0.3s steps(2) infinite;
+    }
+    @keyframes glitchEffect {
+      0% { filter: hue-rotate(0deg) contrast(1.2); }
+      50% { filter: hue-rotate(90deg) contrast(1.5); clip-path: inset(2% 0 5% 0); }
+      100% { filter: hue-rotate(-60deg) contrast(1.1); clip-path: inset(0 0 0 0); }
+    }
+
+    /* Beat pulsing */
+    .phone-frame.beat-pulse {
+      animation: beatScale 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+    @keyframes beatScale {
+      0%, 100% { transform: scale(1); }
+      40% { transform: scale(1.018); }
+    }
+
+    /* Phone status bar overlay */
+    .phone-status-bar {
+      height: 32px;
+      padding: 0 28px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 11px;
+      color: rgba(255, 255, 255, 0.6);
+      font-weight: 500;
+      z-index: 100;
+      pointer-events: none;
+      background: linear-gradient(to bottom, rgba(5,10,20,0.6), transparent);
+    }
+    .status-right {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .phone-island {
+      width: 90px;
+      height: 18px;
+      background: #1a2235;
+      border-radius: 20px;
+      position: absolute;
+      top: 6px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 101;
+    }
+
+    /* Multi-segment story progress indicators */
+    .reels-progress-container {
+      position: absolute;
+      top: 36px;
+      left: 20px;
+      right: 20px;
+      display: flex;
+      gap: 4px;
+      z-index: 100;
+    }
+    .reels-progress-segment {
+      flex: 1;
+      height: 3px;
+      background: rgba(255,255,255,0.2);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+    .reels-progress-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--secondary), var(--tertiary));
+    }
+    .reels-progress-segment.completed .reels-progress-fill {
+      width: 100%;
+    }
+
+    /* Active Content Area */
+    .phone-content {
+      flex: 1;
+      position: relative;
+      overflow: hidden;
+      background: rgba(5, 10, 20, 0.95);
+    }
+
+    /* White Flash transition overlay */
+    .transition-flash {
+      position: absolute;
+      inset: 0;
+      background: #fff;
+      z-index: 99;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.15s ease-out;
+    }
+    .transition-flash.trigger {
+      opacity: 0.85;
+      transition: none;
+    }
+
+    /* ===== SCENE LAYOUTS ===== */
+    .scene {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      padding: 65px 20px 180px;
+      text-align: center;
+      opacity: 0;
+      transform: scale(0.92) translateY(50px);
+      transition: 
+        opacity 0.7s cubic-bezier(0.19, 1, 0.22, 1), 
+        transform 0.7s cubic-bezier(0.19, 1, 0.22, 1);
+      pointer-events: none;
+      z-index: 10;
+    }
+    .scene.active {
+      opacity: 1;
+      transform: scale(1) translateY(0);
+      pointer-events: auto;
+    }
+    .scene.exit-up {
+      opacity: 0;
+      transform: translateY(-80px) scale(0.88);
+    }
+
+    .scene-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 5px 12px;
+      border-radius: 4px;
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      border: 1px solid rgba(0, 240, 255, 0.2);
+      background: rgba(0, 240, 255, 0.06);
+      color: var(--secondary);
+      box-shadow: 0 0 10px rgba(0, 240, 255, 0.08);
+      margin-bottom: 12px;
+    }
+
+    .scene-title {
+      font-size: clamp(20px, 5.5vw, 24px);
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: -0.01em;
+      background: linear-gradient(135deg, #fff 30%, var(--primary) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 10px;
+      text-shadow: 0 4px 10px rgba(0,0,0,0.4);
+    }
+
+    /* 3D Mockup Container */
+    .mockup-3d-wrap {
+      perspective: 800px;
+      width: 100%;
+      margin: 15px auto 0;
+      display: flex;
+      justify-content: center;
+    }
+
+    .mockup-frame {
+      width: 100%;
+      max-width: 280px;
+      border-radius: 14px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      background: rgba(10, 17, 31, 0.6);
+      box-shadow: 
+        0 15px 35px rgba(0,0,0,0.6),
+        0 0 25px rgba(0, 240, 255, 0.1);
+      overflow: hidden;
+      position: relative;
+      transform: rotateX(15deg) rotateY(-8deg) translateZ(0);
+      transition: all 0.5s ease-out;
+    }
+
+    .scene.active .mockup-frame {
+      animation: floatyCard 4s ease-in-out infinite alternate;
+    }
+
+    @keyframes floatyCard {
+      0% { transform: rotateX(15deg) rotateY(-8deg) translateY(0px); }
+      100% { transform: rotateX(18deg) rotateY(-5deg) translateY(-8px); }
+    }
+
+    .mockup-frame img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    /* ===== SCENE SPECIFICS ===== */
+
+    /* SCENE 1: Auto Scrolling & Virtual Cursor */
+    .scroller-container {
+      width: 100%;
+      height: 180px;
+      overflow: hidden;
+      position: relative;
+    }
+    .scroller-img {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: auto;
+      transition: transform 6s linear;
+    }
+    .scroller-container.active .scroller-img {
+      transform: translateY(-50%);
+    }
+    .virtual-cursor {
+      position: absolute;
+      width: 24px;
+      height: 24px;
+      z-index: 20;
+      color: var(--secondary);
+      pointer-events: none;
+      filter: drop-shadow(0 0 5px var(--secondary));
+      transform: translate(140px, 120px);
+      transition: transform 1.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+    }
+    .virtual-cursor.click-act {
+      transform: translate(140px, 120px) scale(0.85);
+    }
+    .click-ripple {
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      border: 2px solid var(--secondary);
+      border-radius: 50%;
+      top: 130px;
+      left: 145px;
+      opacity: 0;
+      z-index: 19;
+      pointer-events: none;
+    }
+    .click-ripple.pulse {
+      animation: rippleEffect 0.6s ease-out forwards;
+    }
+    @keyframes rippleEffect {
+      0% { width: 10px; height: 10px; opacity: 1; transform: translate(-50%, -50%); }
+      100% { width: 60px; height: 60px; opacity: 0; transform: translate(-50%, -50%); }
+    }
+
+    /* Floating Chat Widgets */
+    .floating-chat-bubble {
+      position: absolute;
+      background: rgba(79, 70, 229, 0.18);
+      border: 1px solid rgba(0, 240, 255, 0.3);
+      padding: 6px 12px;
+      border-radius: 12px;
+      font-size: 9px;
+      color: #fff;
+      font-weight: 500;
+      max-width: 120px;
+      text-align: left;
+      backdrop-filter: blur(5px);
+      box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+      animation: floatMotion 3s ease-in-out infinite alternate;
+      z-index: 22;
+      opacity: 0;
+      transform: scale(0.8);
+      transition: all 0.4s ease;
+    }
+    .floating-chat-bubble.visible {
+      opacity: 1;
+      transform: scale(1);
+    }
+    .chat-bubble-1 { top: 90px; left: 10px; animation-delay: 0.2s; }
+    .chat-bubble-2 { bottom: 220px; right: 10px; animation-delay: 0.8s; }
+    
+    @keyframes floatMotion {
+      0% { transform: translateY(0px) rotate(0deg); }
+      100% { transform: translateY(-8px) rotate(2deg); }
+    }
+
+    /* SCENE 2: Job Selector Wheel & Compass */
+    .compass-wrapper {
+      width: 180px;
+      height: 180px;
+      margin: 15px auto 0;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      perspective: 600px;
+    }
+    .job-selector-wheel {
+      width: 160px;
+      height: 160px;
+      border-radius: 50%;
+      border: 4px solid var(--surface-variant);
+      background: radial-gradient(circle, var(--surface) 40%, rgba(26,34,53,0.8) 100%);
+      position: relative;
+      transition: transform 2.5s cubic-bezier(0.1, 0.8, 0.1, 1);
+      box-shadow: 
+        0 10px 30px rgba(0,0,0,0.5),
+        0 0 15px rgba(0,240,255,0.1),
+        inset 0 0 20px rgba(0,240,255,0.1);
+      transform: rotate(0deg);
+    }
+    .wheel-segment {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 80px;
+      height: 20px;
+      transform-origin: 0% 50%;
+      color: rgba(255,255,255,0.4);
+      font-size: 8px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-top: -10px;
+      padding-left: 20px;
+    }
+    .compass-pointer {
+      position: absolute;
+      top: 10px;
+      z-index: 25;
+      font-size: 24px;
+      color: var(--tertiary);
+      text-shadow: 0 0 8px var(--tertiary);
+      animation: pointerBounce 0.5s ease-in-out infinite alternate;
+    }
+    @keyframes pointerBounce {
+      0% { transform: translateY(0px); }
+      100% { transform: translateY(-4px); }
+    }
+    .wheel-lock-glow {
+      position: absolute;
+      inset: -5px;
+      border: 2px solid var(--secondary);
+      border-radius: 50%;
+      opacity: 0;
+      box-shadow: 0 0 20px var(--secondary);
+      animation: pulseGlowCircle 1.5s infinite alternate;
+      pointer-events: none;
+      transition: opacity 0.5s;
+    }
+    .wheel-lock-glow.active {
+      opacity: 1;
+    }
+    @keyframes pulseGlowCircle {
+      from { transform: scale(1.01); box-shadow: 0 0 10px var(--secondary); }
+      to { transform: scale(1.04); box-shadow: 0 0 25px var(--secondary); }
+    }
+
+    .xp-slider-box {
+      width: 100%;
+      max-width: 250px;
+      margin: 18px auto 0;
+      background: rgba(21, 32, 53, 0.7);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: 10px;
+      padding: 10px 14px;
+      text-align: left;
+      opacity: 0;
+      transform: translateY(15px);
+      transition: all 0.5s ease;
+    }
+    .xp-slider-box.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .xp-slider-bar {
+      height: 5px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 3px;
+      margin: 8px 0;
+      position: relative;
+      overflow: hidden;
+    }
+    .xp-slider-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--secondary), var(--tertiary));
+      border-radius: 3px;
+      transition: width 1.2s cubic-bezier(0.19, 1, 0.22, 1);
+    }
+    .xp-tags {
+      display: flex;
+      justify-content: space-between;
+      font-size: 8px;
+      color: var(--on-surface-variant);
+      font-weight: 700;
+    }
+
+    /* SCENE 3: Webcam Scanner & Facial Mesh overlay */
+    .face-tracker-box {
+      position: relative;
+      width: 100%;
+      max-width: 250px;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid rgba(0, 240, 255, 0.2);
+    }
+    .face-mesh-svg {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 15;
+      pointer-events: none;
+    }
+    .mesh-line {
+      stroke: var(--success);
+      stroke-width: 0.5px;
+      stroke-dasharray: 2;
+      opacity: 0.3;
+      transition: all 0.3s;
+    }
+    .mesh-node {
+      fill: var(--success);
+      r: 1.5;
+      opacity: 0.8;
+      animation: pulseNode 1.5s infinite alternate;
+    }
+    @keyframes pulseNode {
+      from { transform: scale(1); opacity: 0.6; }
+      to { transform: scale(1.4); opacity: 1; }
+    }
+    .gaze-vector {
+      stroke: var(--secondary);
+      stroke-width: 1.5px;
+      marker-end: url(#arrow);
+      opacity: 0;
+      transition: opacity 0.5s;
+    }
+    .gaze-vector.active {
+      opacity: 0.85;
+    }
+
+    /* HUD telemetry terminal */
+    .telemetry-readout {
+      width: 100%;
+      max-width: 250px;
+      margin: 12px auto 0;
+      background: rgba(5,10,20,0.85);
+      border: 1px solid rgba(0, 240, 255, 0.15);
+      border-radius: 6px;
+      font-family: monospace;
+      font-size: 8px;
+      color: var(--secondary);
+      padding: 8px 12px;
+      text-align: left;
+      box-shadow: inset 0 0 10px rgba(0,240,255,0.08);
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+    .telemetry-line {
+      overflow: hidden;
+      white-space: nowrap;
+      border-right: 2px solid transparent;
+      width: 0;
+    }
+    .telemetry-line.type-in {
+      animation: typing 1s steps(25) forwards;
+    }
+    @keyframes typing {
+      from { width: 0; }
+      to { width: 100%; }
+    }
+
+    /* Animated Waveform */
+    .reels-waveform {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 2.5px;
+      height: 20px;
+      margin-top: 10px;
+    }
+    .reels-wave-bar {
+      width: 2.5px;
+      height: 3px;
+      background: var(--secondary);
+      border-radius: 1px;
+      transition: height 0.1s ease;
+    }
+    .scene.active .reels-wave-bar {
+      animation: waveBeat 0.4s ease-in-out infinite alternate;
+    }
+    @keyframes waveBeat {
+      0% { height: 3px; }
+      100% { height: 18px; }
+    }
+
+    /* SCENE 4: Radial Gauge & Explosive Score */
+    .radial-score-box {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
+      width: 100%;
+      max-width: 260px;
+      margin: 15px auto 0;
+    }
+    .radial-gauge {
+      width: 105px;
+      height: 105px;
+      position: relative;
+      flex-shrink: 0;
+    }
+    .svg-circle-radial {
+      width: 100%;
+      height: 100%;
+      transform: rotate(-90deg);
+    }
+    .circle-bg {
+      fill: none;
+      stroke: rgba(255,255,255,0.04);
+      stroke-width: 8;
+    }
+    .circle-fill-path {
+      fill: none;
+      stroke: url(#cyanMagentaGradient);
+      stroke-width: 8;
+      stroke-linecap: round;
+      stroke-dasharray: 276; /* circumference 2 * pi * 44 */
+      stroke-dashoffset: 276;
+      transition: stroke-dashoffset 2s cubic-bezier(0.1, 0.8, 0.2, 1);
+    }
+    .radial-score-value {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 26px;
+      font-weight: 800;
+      font-family: 'Space Grotesk', sans-serif;
+      background: linear-gradient(135deg, var(--secondary), var(--tertiary));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    /* Exploding spark particle rings */
+    .gauge-particle-spark {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      border-radius: 50%;
+      border: 1px solid var(--secondary);
+      width: 90px;
+      height: 90px;
+      transform: translate(-50%, -50%) scale(0.9);
+      opacity: 0;
+      pointer-events: none;
+    }
+    .gauge-particle-spark.explode {
+      animation: ringExplode 0.7s cubic-bezier(0.1, 0.8, 0.3, 1) forwards;
+    }
+    @keyframes ringExplode {
+      0% { transform: translate(-50%, -50%) scale(0.9); border-color: var(--secondary); opacity: 0.9; }
+      100% { transform: translate(-50%, -50%) scale(1.4); border-color: var(--tertiary); opacity: 0; border-width: 3px; }
+    }
+
+    /* Popping feedback pills */
+    .feedback-pills-list {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      width: 100%;
+    }
+    .feedback-pill {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 8px;
+      font-weight: 700;
+      text-transform: uppercase;
+      text-align: left;
+      opacity: 0;
+      transform: scale(0.85) translateX(20px);
+      transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+    }
+    .feedback-pill.visible {
+      opacity: 1;
+      transform: scale(1) translateX(0);
+    }
+    .pill-green {
+      background: rgba(57, 255, 20, 0.08);
+      border: 1px solid rgba(57, 255, 20, 0.3);
+      color: var(--success);
+    }
+    .pill-orange {
+      background: rgba(255, 183, 0, 0.08);
+      border: 1px solid rgba(255, 183, 0, 0.3);
+      color: var(--warning);
+    }
+
+    /* SCENE 5: 3D Floating Dual Cards & Premium CTA */
+    .cta-dual-deck {
+      display: flex;
+      gap: 12px;
+      width: 100%;
+      max-width: 260px;
+      margin: 15px auto 0;
+      perspective: 800px;
+    }
+    .floating-3d-card {
+      flex: 1;
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      background: rgba(21, 32, 53, 0.4);
+      box-shadow: 0 10px 20px rgba(0,0,0,0.5);
+      overflow: hidden;
+      opacity: 0;
+      transform: translate3d(0, 30px, -50px) rotateY(15deg);
+      transition: all 0.8s cubic-bezier(0.19, 1, 0.22, 1);
+    }
+    .floating-3d-card.visible {
+      opacity: 1;
+      transform: translate3d(0, 0, 0) rotateY(0deg);
+    }
+    .floating-3d-card img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    .magnetic-cta-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 28px;
+      border-radius: 50px;
+      background: linear-gradient(135deg, var(--secondary), var(--tertiary));
+      color: #03070f;
+      font-weight: 800;
+      font-size: 13px;
+      border: none;
+      cursor: pointer;
+      text-decoration: none;
+      margin-top: 20px;
+      box-shadow: 
+        0 0 15px rgba(0, 240, 255, 0.3),
+        0 5px 15px rgba(0,0,0,0.3);
+      letter-spacing: 0.05em;
+      opacity: 0;
+      transform: scale(0.9);
+      transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+    }
+    .magnetic-cta-btn.visible {
+      opacity: 1;
+      transform: scale(1);
+    }
+    .magnetic-cta-btn:hover {
+      box-shadow: 
+        0 0 25px rgba(255, 0, 127, 0.6),
+        0 5px 15px rgba(255, 0, 127, 0.3);
+      transform: scale(1.06);
+    }
+
+    /* ===== KINETIC REELS STYLE SUBTITLES ===== */
+    .kinetic-captions-overlay {
+      position: absolute;
+      bottom: 120px;
+      left: 15px;
+      right: 15px;
+      z-index: 100;
+      text-align: center;
+      pointer-events: none;
+      min-height: 80px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .caption-word-wrap {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      row-gap: 6px;
+      max-width: 250px;
+      margin: 0 auto;
+    }
+    .kinetic-word {
+      display: inline-block;
+      color: #fff;
+      font-size: clamp(20px, 5.5vw, 24px);
+      font-weight: 800;
+      font-family: 'Space Grotesk', sans-serif;
+      text-transform: uppercase;
+      margin: 0 4px;
+      opacity: 0;
+      transform: scale(0.5) rotate(-10deg);
+      filter: blur(4px);
+      transition: none;
+    }
+    .kinetic-word.pop-active {
+      opacity: 1;
+      transform: scale(1) rotate(0deg);
+      filter: blur(0px);
+      color: #fffb00; /* High Contrast Reels Yellow */
+      text-shadow: 
+        0 0 10px rgba(255, 251, 0, 0.8),
+        0 4px 15px rgba(0,0,0,0.6);
+      animation: springBounceWord 0.28s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+      z-index: 10;
+    }
+    .kinetic-word.highlighted-cyan {
+      color: var(--secondary) !important;
+      text-shadow: 0 0 10px rgba(0, 240, 255, 0.8);
+    }
+    .kinetic-word.highlighted-magenta {
+      color: var(--tertiary) !important;
+      text-shadow: 0 0 10px rgba(255, 0, 127, 0.8);
+    }
+    .kinetic-word.highlighted-green {
+      color: var(--success) !important;
+      text-shadow: 0 0 10px rgba(57, 255, 20, 0.8);
+    }
+    .kinetic-word.pop-inactive {
+      opacity: 0;
+      transform: scale(0.8) translateY(-10px);
+      filter: blur(2px);
+      transition: all 0.15s ease-in;
+    }
+
+    @keyframes springBounceWord {
+      0% { transform: scale(0.5) rotate(-10deg); }
+      70% { transform: scale(1.22) rotate(4deg); }
+      100% { transform: scale(1) rotate(0deg); }
+    }
+
+    /* Floating word-pop emoji bursts */
+    .word-burst-emoji {
+      position: absolute;
+      font-size: 24px;
+      pointer-events: none;
+      z-index: 102;
+      animation: emojiBurstFloat 1.2s cubic-bezier(0.1, 0.8, 0.2, 1) forwards;
+    }
+    @keyframes emojiBurstFloat {
+      0% { transform: scale(0.2) translate(0, 0) rotate(0deg); opacity: 0; }
+      15% { opacity: 1; transform: scale(1.3) translate(0, -10px) rotate(-15deg); }
+      100% { transform: scale(1) translate(var(--dx), var(--dy)) rotate(var(--rot)); opacity: 0; }
+    }
+
+    /* ===== SOCIAL INTERACTIONS OVERLAYS ===== */
+    .reels-sidebar {
+      position: absolute;
+      bottom: 120px;
+      right: 12px;
+      z-index: 110;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 15px;
+    }
+    .sidebar-icon-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      cursor: pointer;
+      position: relative;
+    }
+    .sidebar-btn {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: rgba(10, 17, 31, 0.8);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+    }
+    .sidebar-btn span {
+      font-size: 20px;
+      transition: transform 0.2s;
+    }
+    .sidebar-icon-wrap:hover .sidebar-btn {
+      transform: scale(1.1);
+      border-color: var(--secondary);
+      box-shadow: 0 0 15px rgba(0,240,255,0.4);
+    }
+    .sidebar-icon-wrap.active .sidebar-btn {
+      color: var(--tertiary);
+      border-color: var(--tertiary);
+      box-shadow: 0 0 15px rgba(255,0,127,0.4);
+      animation: heartbeat 0.4s ease-out;
+    }
+    .sidebar-label {
+      font-size: 8px;
+      font-weight: 700;
+      color: #fff;
+      margin-top: 4px;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.8);
+    }
+
+    /* Heart physics popups */
+    .floating-heart {
+      position: absolute;
+      color: var(--tertiary);
+      font-size: 22px;
+      pointer-events: none;
+      z-index: 100;
+      animation: heartFloatUp 1.0s cubic-bezier(0.1, 0.8, 0.2, 1) forwards;
+      text-shadow: 0 0 10px rgba(255, 0, 127, 0.5);
+    }
+    @keyframes heartFloatUp {
+      0% { transform: translate(0, 0) scale(0.2) rotate(0deg); opacity: 0; }
+      15% { opacity: 1; transform: translate(var(--mx), -30px) scale(1.3) rotate(var(--rot)); }
+      100% { transform: translate(var(--tx), -200px) scale(0.8) rotate(var(--frot)); opacity: 0; }
+    }
+
+    /* Comments tooltip hover overlay */
+    .comments-preview-tooltip {
+      position: absolute;
+      right: 50px;
+      bottom: 0;
+      width: 220px;
+      background: rgba(10, 17, 31, 0.95);
+      border: 1px solid rgba(0, 240, 255, 0.3);
+      border-radius: 12px;
+      padding: 10px;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.6);
+      display: none;
+      flex-direction: column;
+      gap: 6px;
+      z-index: 120;
+      text-align: left;
+      backdrop-filter: blur(10px);
+    }
+    .sidebar-icon-wrap:hover .comments-preview-tooltip {
+      display: flex;
+    }
+    .tooltip-header {
+      font-size: 8px;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: var(--secondary);
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      padding-bottom: 4px;
+      letter-spacing: 0.05em;
+    }
+    .tooltip-comment {
+      font-size: 8px;
+      line-height: 1.3;
+      color: rgba(255,255,255,0.85);
+    }
+    .tooltip-comment span {
+      font-weight: 700;
+      color: var(--primary);
+    }
+
+    /* Rotating vinyl track disk overlay */
+    .rotating-record-disc {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: radial-gradient(circle, #000 30%, #222 70%, #00f0ff 100%);
+      border: 2px solid rgba(255,255,255,0.2);
+      box-shadow: 0 0 10px rgba(0,240,255,0.2);
+      animation: spinRecord 4s linear infinite;
+      animation-play-state: paused;
+    }
+    .phone-frame.playing .rotating-record-disc {
+      animation-play-state: running;
+    }
+    @keyframes spinRecord {
+      to { transform: rotate(360deg); }
+    }
+
+    /* Profile Pic Reels Overlay */
+    .reels-profile-pic {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      border: 2px solid var(--tertiary);
+      padding: 1.5px;
+      background: #03070f;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+    .reels-profile-pic img {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+    }
+    .profile-plus-badge {
+      position: absolute;
+      bottom: -4px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--tertiary);
+      border-radius: 50%;
+      width: 14px;
+      height: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-size: 10px;
+      font-weight: 800;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.5);
+    }
+
+    /* Reels Title / Caption details */
+    .reels-text-details {
+      position: absolute;
+      bottom: 35px;
+      left: 15px;
+      right: 65px;
+      z-index: 100;
+      text-align: left;
+      pointer-events: none;
+    }
+    .reels-username {
+      font-size: 11px;
+      font-weight: 800;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 4px;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.8);
+    }
+    .reels-desc {
+      font-size: 9px;
+      color: rgba(255,255,255,0.8);
+      line-height: 1.4;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.8);
+    }
+
+    /* ===== MIXER & AUDIO CONTROLS ===== */
+    .reels-mixer-bar {
+      position: absolute;
+      top: 50px;
+      right: 15px;
+      z-index: 150;
+      display: flex;
+      gap: 8px;
+    }
+    .mixer-btn {
+      width: 28px;
+      height: 28px;
+      border-radius: 6px;
+      background: rgba(10, 17, 31, 0.7);
+      border: 1px solid rgba(255,255,255,0.1);
+      color: var(--secondary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+      transition: all 0.2s;
+    }
+    .mixer-btn:hover {
+      background: var(--secondary);
+      color: #03070f;
+      box-shadow: 0 0 10px var(--secondary);
+    }
+    .mixer-btn span {
+      font-size: 16px;
+    }
+
+    .mixer-dropdown {
+      position: absolute;
+      top: 36px;
+      right: 0;
+      background: rgba(10, 17, 31, 0.95);
+      border: 1px solid rgba(0, 240, 255, 0.3);
+      border-radius: 8px;
+      padding: 10px 14px;
+      display: none;
+      flex-direction: column;
+      gap: 8px;
+      width: 150px;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.6);
+      backdrop-filter: blur(10px);
+    }
+    .mixer-dropdown.active {
+      display: flex;
+    }
+    .volume-slider-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+    .volume-slider-label {
+      font-size: 8px;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: var(--on-surface-variant);
+    }
+    .vol-slider {
+      width: 100%;
+      accent-color: var(--secondary);
+      height: 3px;
+      cursor: pointer;
+    }
+
+    /* Floating music EQ visualizer bars overlay */
+    .floating-music-eq {
+      position: absolute;
+      top: 50px;
+      left: 15px;
+      z-index: 100;
+      display: flex;
+      align-items: flex-end;
+      gap: 2px;
+      height: 14px;
+      opacity: 0.65;
+    }
+    .eq-bar {
+      width: 2px;
+      height: 2px;
+      background: var(--secondary);
+      border-radius: 1px;
+      transition: height 0.15s ease;
+    }
+
+    /* ===== BOTTOM BAR CONTROLS ===== */
+    .reels-bottom-actions {
+      height: 52px;
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+      background: rgba(6,12,22,0.92);
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      z-index: 100;
+    }
+    .action-btn-main {
+      background: none;
+      border: none;
+      color: rgba(255,255,255,0.6);
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+      transition: all 0.2s;
+    }
+    .action-btn-main span {
+      font-size: 20px;
+    }
+    .action-btn-main:hover {
+      color: #fff;
+    }
+    .action-btn-main.active {
+      color: var(--secondary);
+      text-shadow: 0 0 10px rgba(0, 240, 255, 0.3);
+    }
+
+    /* Floating swipe indicator overlay */
+    .swipe-overlay-indicator {
+      position: absolute;
+      inset: 0;
+      z-index: 80;
+      pointer-events: none;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: rgba(3, 7, 15, 0.7);
+      opacity: 0;
+      transition: opacity 0.4s;
+    }
+    .swipe-overlay-indicator.visible {
+      opacity: 1;
+    }
+    .swipe-hand-icon {
+      font-size: 40px;
+      color: var(--secondary);
+      animation: swipeHandMotion 1.5s infinite;
+      text-shadow: 0 0 15px var(--secondary);
+    }
+    @keyframes swipeHandMotion {
+      0% { transform: translateY(20px); opacity: 0; }
+      50% { opacity: 1; }
+      100% { transform: translateY(-20px); opacity: 0; }
+    }
+
+    /* ===== INITIALIZER MATRIX OVERLAY ===== */
+    .matrix-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(3, 7, 15, 0.99);
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 30px;
+      text-align: center;
+      transition: opacity 0.6s cubic-bezier(0.19, 1, 0.22, 1);
+    }
+    .matrix-overlay.hide {
+      opacity: 0;
+      pointer-events: none;
+    }
+    .matrix-box {
+      max-width: 360px;
+      padding: 30px;
+      border-radius: 20px;
+      border: 1px solid rgba(0, 240, 255, 0.25);
+      background: rgba(10, 17, 31, 0.8);
+      backdrop-filter: blur(15px);
+      box-shadow: 
+        0 15px 40px rgba(0, 0, 0, 0.8),
+        0 0 30px rgba(0, 240, 255, 0.1);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 15px;
+      animation: panelFloat 4s ease-in-out infinite alternate;
+    }
+    @keyframes panelFloat {
+      0% { transform: translateY(0px) rotate(0deg); }
+      100% { transform: translateY(-6px) rotate(0.5deg); }
+    }
+    .matrix-icon {
+      font-size: 44px;
+      color: var(--secondary);
+      animation: heartbeat 1.5s infinite;
+    }
+    @keyframes heartbeat {
+      0%, 100% { transform: scale(1); filter: drop-shadow(0 0 5px rgba(0, 240, 255, 0.3)); }
+      50% { transform: scale(1.08); filter: drop-shadow(0 0 15px rgba(0, 240, 255, 0.7)); }
+    }
+    .matrix-btn {
+      padding: 12px 28px;
+      border-radius: 50px;
+      background: linear-gradient(135deg, var(--secondary), var(--tertiary));
+      color: #03070f;
+      font-weight: 800;
+      font-size: 14px;
+      border: none;
+      cursor: pointer;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      box-shadow: 0 5px 15px rgba(0, 240, 255, 0.3);
+      transition: all 0.3s;
+    }
+    .matrix-btn:hover {
+      transform: scale(1.05);
+      box-shadow: 0 8px 25px rgba(255, 0, 127, 0.5);
+    }
+
+    /* REPLAY COVER OVERLAY */
+    .replay-overlay {
+      position: absolute;
+      inset: 0;
+      z-index: 200;
+      background: rgba(3, 7, 15, 0.96);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 15px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.5s ease;
+    }
+    .replay-overlay.visible {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    
+    /* Responsive Viewports */
+    @media (max-width: 480px) {
+      .phone-simulator-wrap {
+        height: 100vh;
+        max-height: none;
+        max-width: none;
+      }
+      .phone-frame {
+        border-radius: 0;
+        border: none;
+      }
+      .phone-island {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div id="showcase-wrapper">
+    <!-- Cinema Backdrop (Blurred Reactive Screen) -->
+    <div class="cinema-backdrop" id="cinemaBackdrop"></div>
+    <!-- Perspective Grid Overlay -->
+    <div class="retro-grid-overlay"></div>
+
+    <!-- ===== INITIALIZER INTRO MATRIX ===== -->
+    <div class="matrix-overlay" id="matrixOverlay">
+      <div class="matrix-box">
+        <span class="material-symbols-outlined matrix-icon">radio</span>
+        <h2 style="font-size: 18px; font-weight: 800; color: #fff; letter-spacing: 0.05em;">JOBJITSU // REEL_ENGINE</h2>
+        <p style="font-size: 11px; color: var(--on-surface-variant); line-height: 1.5;">
+          Ready to launch the high-energy social media reel showcase.<br/>Enable audio for the retrowave synth soundtrack and beat-pulse.
+        </p>
+        <button class="matrix-btn" onclick="initializeEngine()">[ Launch Matrix ]</button>
+      </div>
+    </div>
+
+    <!-- ===== SMARTPHONE WRAPPER ===== -->
+    <div class="phone-simulator-wrap" id="phoneWrapper">
+      <div class="phone-frame" id="phoneFrame">
+        <!-- Physical Island Notch -->
+        <div class="phone-island"></div>
+
+        <!-- Phone Status Bar -->
+        <div class="phone-status-bar">
+          <span>9:41</span>
+          <div class="status-right">
+            <span class="material-symbols-outlined" style="font-size:12px;">signal_cellular_4_bar</span>
+            <span class="material-symbols-outlined" style="font-size:12px;">wifi</span>
+            <span class="material-symbols-outlined" style="font-size:12px;">battery_5_bar</span>
+          </div>
+        </div>
+
+        <!-- Segmented Reels Timeline Progress -->
+        <div class="reels-progress-container" id="reelsTimeline">
+          <!-- Populated by JS -->
+        </div>
+
+        <!-- Music EQ visualizer floating overlay -->
+        <div class="floating-music-eq" id="musicEq">
+          <div class="eq-bar"></div>
+          <div class="eq-bar"></div>
+          <div class="eq-bar"></div>
+          <div class="eq-bar"></div>
+        </div>
+
+        <!-- Mixer / Dropdown volume triggers -->
+        <div class="reels-mixer-bar">
+          <button class="mixer-btn" id="mixerTriggerBtn" title="Audio Mixer">
+            <span class="material-symbols-outlined">tune</span>
+          </button>
+          <div class="mixer-dropdown" id="mixerDropdown">
+            <div class="volume-slider-wrap">
+              <div class="volume-slider-label">Music Vol</div>
+              <input type="range" class="vol-slider" id="musicVolSlider" min="0" max="1" step="0.05" value="0.25" />
+            </div>
+            <div class="volume-slider-wrap" style="margin-top: 5px;">
+              <div class="volume-slider-label">SFX Vol</div>
+              <input type="range" class="vol-slider" id="sfxVolSlider" min="0" max="1" step="0.05" value="0.5" />
+            </div>
+          </div>
+        </div>
+
+        <!-- Active Viewport Content -->
+        <div class="phone-content" id="phoneViewport">
+          <!-- Flash transition layer -->
+          <div class="transition-flash" id="flashOverlay"></div>
+
+          <!-- SCENE 1: THE HOOK -->
+          <div class="scene" id="scene-1">
+            <div class="scene-badge">✦ MODULE_01 // THE HOOK</div>
+            <h2 class="scene-title">COACHING LIKE A PRO</h2>
+            
+            <!-- Floating mock chat bubble overlays -->
+            <div class="floating-chat-bubble chat-bubble-1" id="chatBubble1">"Tell me about a difficult coding challenge you solved..."</div>
+            <div class="floating-chat-bubble chat-bubble-2" id="chatBubble2">"Let's practice design patterns!"</div>
+
+            <div class="mockup-3d-wrap">
+              <div class="mockup-frame" id="frame1">
+                <span class="material-symbols-outlined virtual-cursor" id="cursor1">navigation</span>
+                <div class="click-ripple" id="ripple1"></div>
+                <div class="scroller-container" id="scroller1">
+                  <img src="landing.png" class="scroller-img" id="scrollImg1" alt="JobJitsu Landing" />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- SCENE 2: CONFIGURATION -->
+          <div class="scene" id="scene-2">
+            <div class="scene-badge">✦ MODULE_02 // SETUP</div>
+            <h2 class="scene-title">ONE-CLICK CONFIG</h2>
+            
+            <div class="compass-wrapper">
+              <div class="job-selector-wheel" id="jobWheel">
+                <div class="wheel-segment" style="transform: rotate(0deg);">Java Dev</div>
+                <div class="wheel-segment" style="transform: rotate(60deg);">AI Engineer</div>
+                <div class="wheel-segment" style="transform: rotate(120deg);">Full Stack</div>
+                <div class="wheel-segment" style="transform: rotate(180deg);">PM Manager</div>
+                <div class="wheel-segment" style="transform: rotate(240deg);">UX designer</div>
+                <div class="wheel-segment" style="transform: rotate(300deg);">Data Scientist</div>
+              </div>
+              <span class="material-symbols-outlined compass-pointer">arrow_drop_down</span>
+              <div class="wheel-lock-glow" id="wheelGlow"></div>
+            </div>
+
+            <div class="xp-slider-box" id="xpBox2">
+              <div class="xp-tags">
+                <span>Entry</span>
+                <span style="color:var(--secondary)">Mid-Level</span>
+                <span id="xpTitleLock">Senior</span>
+              </div>
+              <div class="xp-slider-bar">
+                <div class="xp-slider-fill" id="xpSliderFill"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- SCENE 3: LIVE mock webcam feedback -->
+          <div class="scene" id="scene-3">
+            <div class="scene-badge" style="border-color: rgba(57,255,20,0.3); background: rgba(57,255,20,0.06); color: var(--success);">
+              ✦ MODULE_03 // NEURAL FB
+            </div>
+            <h2 class="scene-title">FACE & VOICE TRAX</h2>
+
+            <div class="mockup-3d-wrap">
+              <div class="mockup-frame face-tracker-box">
+                <!-- SVG facial mesh overlay -->
+                <svg class="face-mesh-svg" viewBox="0 0 100 100" preserveAspectRatio="none">
+                  <defs>
+                    <marker id="arrow" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="4" markerHeight="4" orient="auto-start-reverse">
+                      <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--secondary)" />
+                    </marker>
+                  </defs>
+                  
+                  <!-- Bounding green grids -->
+                  <path class="mesh-line" d="M10,20 L30,10 L70,10 L90,20 L90,60 L70,90 L30,90 L10,60 Z" />
+                  <path class="mesh-line" d="M30,30 L50,15 L70,30 L70,60 L50,75 L30,60 Z" />
+                  <path class="mesh-line" d="M10,60 L90,60 M30,90 L70,10 M30,10 L70,90" />
+                  
+                  <!-- Facial tracker nodes -->
+                  <circle class="mesh-node" cx="50" cy="35" /> <!-- nose -->
+                  <circle class="mesh-node" cx="38" cy="28" /> <!-- left eye -->
+                  <circle class="mesh-node" cx="62" cy="28" /> <!-- right eye -->
+                  <circle class="mesh-node" cx="50" cy="55" /> <!-- mouth -->
+                  <circle class="mesh-node" cx="30" cy="48" /> <!-- cheek l -->
+                  <circle class="mesh-node" cx="70" cy="48" /> <!-- cheek r -->
+
+                  <!-- Gaze tracking vectors -->
+                  <line class="gaze-vector" id="gazeL" x1="38" y1="28" x2="28" y2="22" />
+                  <line class="gaze-vector" id="gazeR" x1="62" y1="28" x2="72" y2="22" />
+                </svg>
+                <img src="interview.png" alt="Live Interview" />
+              </div>
+            </div>
+
+            <!-- telemetry readout -->
+            <div class="telemetry-readout">
+              <div class="telemetry-line" id="teleLine1">> INITIALIZING VOICE_DETECTOR...</div>
+              <div class="telemetry-line" id="teleLine2">> CALIBRATING EYE_GAZE MESH...</div>
+              <div class="telemetry-line" id="teleLine3">> ANALYSIS: ACTIVE (COMPOSURE HIGH)</div>
+            </div>
+
+            <div class="reels-waveform" id="reelsWave">
+              <!-- bars loaded dynamically -->
+            </div>
+          </div>
+
+          <!-- SCENE 4: PERFORMANCE FEEDBACK -->
+          <div class="scene" id="scene-4">
+            <div class="scene-badge">✦ MODULE_04 // ANALYSIS</div>
+            <h2 class="scene-title">AI PERFORMANCE</h2>
+
+            <div class="radial-score-box">
+              <div class="radial-gauge">
+                <!-- Particle shock waves -->
+                <div class="gauge-particle-spark" id="gaugeSpark"></div>
+                <svg class="svg-circle-radial" viewBox="0 0 100 100">
+                  <defs>
+                    <linearGradient id="cyanMagentaGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                      <stop offset="0%" stop-color="#00f0ff" />
+                      <stop offset="100%" stop-color="#ff007f" />
+                    </linearGradient>
+                  </defs>
+                  <circle class="circle-bg" cx="50" cy="50" r="44" />
+                  <circle class="circle-fill-path" id="radialProgressCircle" cx="50" cy="50" r="44" />
+                </svg>
+                <div class="radial-score-value" id="scoreValEl">0%</div>
+              </div>
+
+              <div class="mockup-frame" style="max-width: 110px; margin: 0;">
+                <img src="feedback.png" alt="Feedback Report" />
+              </div>
+            </div>
+
+            <!-- popping pills -->
+            <div class="feedback-pills-list" style="margin-top: 18px;">
+              <div class="feedback-pill pill-green" id="pillG1">
+                <span class="material-symbols-outlined" style="font-size:12px;">check_circle</span>
+                Excellent vocal confidence
+              </div>
+              <div class="feedback-pill pill-green" id="pillG2" style="transition-delay: 0.2s;">
+                <span class="material-symbols-outlined" style="font-size:12px;">visibility</span>
+                Steady eye contact index
+              </div>
+              <div class="feedback-pill pill-orange" id="pillO3" style="transition-delay: 0.4s;">
+                <span class="material-symbols-outlined" style="font-size:12px;">info</span>
+                Speak 10% slower under pressure
+              </div>
+            </div>
+          </div>
+
+          <!-- SCENE 5: RESUME & CTA -->
+          <div class="scene" id="scene-5">
+            <div class="scene-badge" style="border-color: rgba(255,0,127,0.3); background: rgba(255,0,127,0.06); color: var(--tertiary);">
+              ✦ MODULE_05 // SYNERGY
+            </div>
+            <h2 class="scene-title">CAREER ASSISTANT</h2>
+
+            <div class="cta-dual-deck">
+              <div class="floating-3d-card" id="ctaCardL">
+                <img src="resume.png" alt="Resume Analyzer" />
+              </div>
+              <div class="floating-3d-card" id="ctaCardR">
+                <img src="chatbot.png" alt="Gemini Chatbot" />
+              </div>
+            </div>
+
+            <button class="magnetic-cta-btn" id="finalCtaBtn" onclick="window.open('https://jobjitsu.ai', '_blank')">
+              <span class="material-symbols-outlined">rocket_launch</span>
+              jobjitsu.ai
+            </button>
+          </div>
+
+          <!-- Swipe gestures / interactive overlay container -->
+          <div class="swipe-overlay-indicator" id="swipeIndicator">
+            <span class="material-symbols-outlined swipe-hand-icon">back_to_tab</span>
+            <span style="font-size:12px; font-weight:700; color:#fff; margin-top:10px; text-transform:uppercase;">Swipe Up to Start</span>
+          </div>
+
+          <!-- KINETIC CAPTIONS ENGINE OVERLAY -->
+          <div class="kinetic-captions-overlay">
+            <div class="caption-word-wrap" id="captionWrap">
+              <!-- Bouncing words go here -->
+            </div>
+          </div>
+
+          <!-- Instagram Reels Social Right Sidebar -->
+          <div class="reels-sidebar">
+            <div class="sidebar-icon-wrap" id="profileWrap">
+              <div class="reels-profile-pic">
+                <img src="landing.png" alt="JobJitsu Logo" />
+                <div class="profile-plus-badge">+</div>
+              </div>
+            </div>
+
+            <div class="sidebar-icon-wrap" id="likeBtnWrap">
+              <button class="sidebar-btn" id="reelsLikeBtn">
+                <span class="material-symbols-outlined">favorite</span>
+              </button>
+              <span class="sidebar-label" id="likeCounter">12.8K</span>
+            </div>
+
+            <div class="sidebar-icon-wrap" id="commentBtnWrap">
+              <button class="sidebar-btn">
+                <span class="material-symbols-outlined">comment</span>
+              </button>
+              <span class="sidebar-label">1.2K</span>
+              <!-- Comments popover tooltip -->
+              <div class="comments-preview-tooltip">
+                <div class="tooltip-header">Recent Comments (1.2K)</div>
+                <div class="tooltip-comment"><span>@alex_dev:</span> The vector face tracking look is crazy! Need this.</div>
+                <div class="tooltip-comment"><span>@sam_tech:</span> Practice mock interviews with procedural audio loops? Yes!</div>
+                <div class="tooltip-comment"><span>@jobjitsu:</span> Try it now at jobjitsu.ai! 🚀</div>
+              </div>
+            </div>
+
+            <div class="sidebar-icon-wrap" id="shareBtnWrap">
+              <button class="sidebar-btn">
+                <span class="material-symbols-outlined">share</span>
+              </button>
+              <span class="sidebar-label">Share</span>
+            </div>
+
+            <div class="sidebar-icon-wrap">
+              <div class="rotating-record-disc"></div>
+            </div>
+          </div>
+
+          <!-- Social caption overlay details -->
+          <div class="reels-text-details">
+            <div class="reels-username">
+              jobjitsu.ai
+              <span style="font-size:8px; background:var(--tertiary); color:#fff; padding:2px 6px; border-radius:3px;">SPONSORED</span>
+            </div>
+            <div class="reels-desc">Ace every interview with our AI mockup prep coach. Domain-specific, live telemetry and full report! 🤖⚡</div>
+          </div>
+
+          <!-- REPLAY COVER LAYER -->
+          <div class="replay-overlay" id="replayOverlay">
+            <span class="material-symbols-outlined" style="font-size: 48px; color: var(--secondary); animation: heartbeat 1.5s infinite;">replay</span>
+            <h2 style="font-size: 16px; font-weight: 800; text-transform: uppercase; color: #fff;">Transmission Finished</h2>
+            <p style="font-size: 10px; color: var(--on-surface-variant);">Click below to restart the cinematic reel.</p>
+            <button class="matrix-btn" onclick="restartReel()">[ Replay Reel ]</button>
+          </div>
+
+        </div>
+
+        <!-- Simulated Reels Bottom Actions -->
+        <div class="reels-bottom-actions">
+          <button class="action-btn-main active">
+            <span class="material-symbols-outlined">home</span>
+          </button>
+          <button class="action-btn-main">
+            <span class="material-symbols-outlined">search</span>
+          </button>
+          <button class="action-btn-main" style="color: #fff;">
+            <span class="material-symbols-outlined" style="font-size: 26px;">add_box</span>
+          </button>
+          <button class="action-btn-main">
+            <span class="material-symbols-outlined">movie</span>
+          </button>
+          <button class="action-btn-main">
+            <span class="material-symbols-outlined">person</span>
+          </button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ===== DATA SETTINGS =====
+    const TOTAL_SCENES = 5;
+    const SCENE_DURATIONS = [6500, 10000, 15000, 10000, 12000];
+
+    const SCRIPTS = [
+      "What if you could practice for your dream job with an AI that coaches you like a pro?",
+      "JobJitsu is an AI-powered interview coaching platform designed to help you ace every interview. Simply configure your session, select your role, and start.",
+      "You'll face three distinct AI interviewers speaking to you. As you answer with your voice, JobJitsu's neural analysis tracks your eye contact, facial expressions, and voice tone.",
+      "Immediately after the session, get a full performance report detailing your strengths, weaknesses, and a comprehensive score.",
+      "With domain-specific questions, resume tools, and career support powered by Google Gemini, JobJitsu is your ultimate prep partner. Visit JobJitsu.ai and start free today."
+    ];
+
+    // Subtitle phrase highlighting logic
+    // Key words to color highlight: { wordIndex: 'cyan' | 'magenta' | 'green' }
+    const HIGHLIGHTS = {
+      0: { 8: 'cyan', 9: 'cyan', 13: 'magenta', 17: 'green' }, // dream job, AI, pro
+      1: { 0: 'magenta', 3: 'cyan', 7: 'green', 13: 'magenta' }, // JobJitsu, AI-powered, ace, configure
+      2: { 4: 'cyan', 5: 'cyan', 16: 'magenta', 19: 'green', 20: 'green' }, // AI interviewers, neural analysis, eye contact
+      3: { 9: 'cyan', 11: 'cyan', 12: 'magenta', 16: 'green' }, // performance report, strengths, score
+      4: { 2: 'cyan', 4: 'cyan', 9: 'magenta', 12: 'green' } // domain-specific, resume tools, Gemini, partner
+    };
+
+    // Words that trigger floating emoji bursts
+    const EMOJI_TRIGGERS = {
+      "dream": "🎯",
+      "job": "💼",
+      "pro": "🔥",
+      "interview": "👥",
+      "ace": "⚡",
+      "role": "🚀",
+      "interviewers": "🗣️",
+      "analysis": "🧠",
+      "contact": "👁️",
+      "expressions": "🎭",
+      "report": "📊",
+      "score": "🏆",
+      "Gemini": "✨",
+      "partner": "💎"
+    };
+
+    // Image backdrops corresponding to scenes
+    const SCENE_BACKDROPS = [
+      "landing.png",
+      "landing.png",
+      "interview.png",
+      "feedback.png",
+      "resume.png"
+    ];
+
+    let currentScene = 0;
+    let isPlaying = false;
+    let sceneTimer = null;
+    let progressTimer = null;
+    let sceneStartTime = 0;
+    let wordTimers = [];
+
+    // ===== AUDIO CONTROLLER (WEB AUDIO API PROCEDURAL RETROWAVE SYNTHESIZER) =====
+    const AudioCtx = window.AudioContext || window.webkitAudioContext;
+    let actx = null;
+    let kickVol = 0.5;
+    let bassVol = 0.2;
+    let hatVol = 0.15;
+    let sfxVol = 0.5;
+    let musicVolMultiplier = 0.25;
+
+    let beatInterval = null;
+    let nextBeatTime = 0;
+    let currentBeatIndex = 0;
+    const tempo = 125; // BPM
+    const beatLen = 60 / tempo; // 0.48s
+
+    function initAudioContext() {
+      if (!actx) {
+        actx = new AudioCtx();
+      }
+      if (actx.state === 'suspended') {
+        actx.resume();
+      }
+    }
+
+    // Procedural drum kick sound
+    function playKickSynth(time) {
+      if (kickVol === 0) return;
+      const osc = actx.createOscillator();
+      const gain = actx.createGain();
+      osc.connect(gain);
+      gain.connect(actx.destination);
+
+      osc.frequency.setValueAtTime(150, time);
+      osc.frequency.exponentialRampToValueAtTime(0.01, time + 0.18);
+
+      gain.gain.setValueAtTime(kickVol * musicVolMultiplier, time);
+      gain.gain.linearRampToValueAtTime(0.001, time + 0.18);
+
+      osc.start(time);
+      osc.stop(time + 0.18);
+    }
+
+    // Procedural synthesized Hi-Hat
+    function playHatSynth(time) {
+      if (hatVol === 0) return;
+      const osc = actx.createOscillator();
+      const gain = actx.createGain();
+      osc.connect(gain);
+      gain.connect(actx.destination);
+
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(8000, time);
+      
+      gain.gain.setValueAtTime(hatVol * musicVolMultiplier, time);
+      gain.gain.exponentialRampToValueAtTime(0.001, time + 0.05);
+
+      osc.start(time);
+      osc.stop(time + 0.05);
+    }
+
+    // Procedural retrowave bassline notes sequencer
+    // C minor: C2 (65.4Hz), Eb2 (77.8Hz), F2 (87.3Hz), G2 (98.0Hz)
+    const BASS_PROGRESSIONS = [
+      [65.40, 65.40, 77.78, 77.78], // Scene 1
+      [65.40, 65.40, 87.31, 87.31], // Scene 2
+      [77.78, 77.78, 98.00, 87.31], // Scene 3
+      [65.40, 77.78, 87.31, 98.00], // Scene 4
+      [87.31, 87.31, 98.00, 65.40]  // Scene 5
+    ];
+
+    function playBassNote(freq, time, dur) {
+      if (bassVol === 0) return;
+      const osc = actx.createOscillator();
+      const filter = actx.createBiquadFilter();
+      const gain = actx.createGain();
+
+      osc.connect(filter);
+      filter.connect(gain);
+      gain.connect(actx.destination);
+
+      osc.type = 'sawtooth';
+      osc.frequency.setValueAtTime(freq, time);
+
+      filter.type = 'lowpass';
+      filter.frequency.setValueAtTime(300, time);
+      filter.frequency.exponentialRampToValueAtTime(100, time + dur);
+
+      gain.gain.setValueAtTime(0, time);
+      gain.gain.linearRampToValueAtTime(bassVol * musicVolMultiplier, time + 0.02);
+      gain.gain.exponentialRampToValueAtTime(0.001, time + dur);
+
+      osc.start(time);
+      osc.stop(time + dur);
+    }
+
+    // Dynamic procedural beat drum scheduler
+    function audioScheduler() {
+      while (nextBeatTime < actx.currentTime + 0.1) {
+        scheduleBeat(currentBeatIndex, nextBeatTime);
+        nextBeatTime += beatLen;
+        currentBeatIndex = (currentBeatIndex + 1) % 16;
+      }
+    }
+
+    function scheduleBeat(beatStep, time) {
+      // 1. Drums
+      if (beatStep % 4 === 0) {
+        // Beats 1, 5, 9, 13
+        playKickSynth(time);
+      }
+      if (beatStep % 4 === 2) {
+        // Snare/hihat overlay
+        playHatSynth(time);
+      }
+      if (beatStep % 4 === 1 || beatStep % 4 === 3) {
+        playHatSynth(time);
+      }
+
+      // 2. Retrowave Bass notes playing on every beat step
+      const chord = BASS_PROGRESSIONS[currentScene];
+      const noteFreq = chord[Math.floor(beatStep / 4) % chord.length];
+      
+      // Sync pulse visuals to the primary kick drum step
+      if (beatStep % 4 === 0) {
+        // Trigger beat pulsing on active mockup card and EQ bars
+        const pulseTimeMs = (time - actx.currentTime) * 1000;
+        setTimeout(() => {
+          triggerBeatVisuals();
+        }, Math.max(0, pulseTimeMs));
+      }
+
+      // Bass progression patterns
+      if (beatStep % 2 === 0) {
+        playBassNote(noteFreq, time, beatLen * 0.85);
+      } else {
+        // play octaved jump note on eighth step
+        playBassNote(noteFreq * 2, time, beatLen * 0.45);
+      }
+    }
+
+    function startLoopSequencer() {
+      initAudioContext();
+      nextBeatTime = actx.currentTime + 0.05;
+      beatInterval = setInterval(audioScheduler, 25);
+      document.getElementById('phoneFrame').classList.add('playing');
+    }
+
+    function stopLoopSequencer() {
+      if (beatInterval) clearInterval(beatInterval);
+      document.getElementById('phoneFrame').classList.remove('playing');
+    }
+
+    // ===== PROCEDURAL SFX SYNTHS =====
+    // Whip Transition whoosh
+    function playTransitionWhoosh() {
+      if (sfxVol === 0) return;
+      initAudioContext();
+      const osc = actx.createOscillator();
+      const gain = actx.createGain();
+      const filter = actx.createBiquadFilter();
+
+      osc.connect(filter);
+      filter.connect(gain);
+      gain.connect(actx.destination);
+
+      osc.type = 'sawtooth';
+      osc.frequency.setValueAtTime(60, actx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(1400, actx.currentTime + 0.5);
+
+      filter.type = 'bandpass';
+      filter.frequency.setValueAtTime(100, actx.currentTime);
+      filter.frequency.exponentialRampToValueAtTime(2200, actx.currentTime + 0.5);
+      filter.Q.value = 5;
+
+      gain.gain.setValueAtTime(sfxVol * 0.4, actx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, actx.currentTime + 0.5);
+
+      osc.start();
+      osc.stop(actx.currentTime + 0.5);
+
+      // Low frequency hit impact
+      const subOsc = actx.createOscillator();
+      const subGain = actx.createGain();
+      subOsc.connect(subGain);
+      subGain.connect(actx.destination);
+      subOsc.frequency.setValueAtTime(70, actx.currentTime + 0.1);
+      subOsc.frequency.exponentialRampToValueAtTime(20, actx.currentTime + 0.4);
+      subGain.gain.setValueAtTime(sfxVol * 0.5, actx.currentTime + 0.1);
+      subGain.gain.exponentialRampToValueAtTime(0.001, actx.currentTime + 0.4);
+      subOsc.start(actx.currentTime + 0.1);
+      subOsc.stop(actx.currentTime + 0.4);
+    }
+
+    // Kinetic word click tick
+    function playWordClickSFX() {
+      if (sfxVol === 0) return;
+      initAudioContext();
+      const osc = actx.createOscillator();
+      const gain = actx.createGain();
+      osc.connect(gain);
+      gain.connect(actx.destination);
+
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(1200 + Math.random() * 200, actx.currentTime);
+      
+      gain.gain.setValueAtTime(sfxVol * 0.15, actx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, actx.currentTime + 0.025);
+
+      osc.start();
+      osc.stop(actx.currentTime + 0.025);
+    }
+
+    // Heart bubble plop
+    function playBubblePlopSFX() {
+      if (sfxVol === 0) return;
+      initAudioContext();
+      const osc = actx.createOscillator();
+      const gain = actx.createGain();
+      osc.connect(gain);
+      gain.connect(actx.destination);
+
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(350, actx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(850, actx.currentTime + 0.06);
+
+      gain.gain.setValueAtTime(sfxVol * 0.3, actx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, actx.currentTime + 0.06);
+
+      osc.start();
+      osc.stop(actx.currentTime + 0.06);
+    }
+
+    // Riser synth
+    let riserOsc = null;
+    let riserGain = null;
+    function startRiserSynth(duration) {
+      if (sfxVol === 0) return;
+      initAudioContext();
+      riserOsc = actx.createOscillator();
+      riserGain = actx.createGain();
+      riserOsc.connect(riserGain);
+      riserGain.connect(actx.destination);
+
+      riserOsc.type = 'sine';
+      riserOsc.frequency.setValueAtTime(110, actx.currentTime);
+      riserOsc.frequency.linearRampToValueAtTime(660, actx.currentTime + duration);
+
+      riserGain.gain.setValueAtTime(0.01, actx.currentTime);
+      riserGain.gain.linearRampToValueAtTime(sfxVol * 0.22, actx.currentTime + duration);
+
+      riserOsc.start();
+      riserOsc.stop(actx.currentTime + duration);
+    }
+
+    // Arpeggio Success Chime
+    function playSuccessChime() {
+      if (sfxVol === 0) return;
+      initAudioContext();
+      const now = actx.currentTime;
+      const playNote = (freq, startOffset, duration) => {
+        const osc = actx.createOscillator();
+        const gain = actx.createGain();
+        osc.connect(gain);
+        gain.connect(actx.destination);
+
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(freq, now + startOffset);
+        
+        gain.gain.setValueAtTime(0, now + startOffset);
+        gain.gain.linearRampToValueAtTime(sfxVol * 0.15, now + startOffset + 0.03);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + startOffset + duration);
+
+        osc.start(now + startOffset);
+        osc.stop(now + startOffset + duration);
+      };
+
+      playNote(523.25, 0, 0.4); // C5
+      playNote(659.25, 0.08, 0.4); // E5
+      playNote(783.99, 0.16, 0.4); // G5
+      playNote(1046.50, 0.24, 0.6); // C6
+    }
+
+    // Audio click setup wheel
+    function playWheelTickSFX() {
+      if (sfxVol === 0) return;
+      initAudioContext();
+      const osc = actx.createOscillator();
+      const gain = actx.createGain();
+      osc.connect(gain);
+      gain.connect(actx.destination);
+
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(220, actx.currentTime);
+      gain.gain.setValueAtTime(sfxVol * 0.15, actx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, actx.currentTime + 0.04);
+      osc.start();
+      osc.stop(actx.currentTime + 0.04);
+    }
+
+    // ===== CORE INITIALIZATION =====
+    function initializeEngine() {
+      document.getElementById('matrixOverlay').classList.add('hide');
+      initAudioContext();
+      
+      // Render timeline indicators
+      const timeline = document.getElementById('reelsTimeline');
+      timeline.innerHTML = '';
+      for (let i = 0; i < TOTAL_SCENES; i++) {
+        const seg = document.createElement('div');
+        seg.className = 'reels-progress-segment';
+        const fill = document.createElement('div');
+        fill.className = 'reels-progress-fill';
+        seg.appendChild(fill);
+        timeline.appendChild(seg);
+      }
+
+      // Generate waveform bars in Scene 3
+      const waveContainer = document.getElementById('reelsWave');
+      waveContainer.innerHTML = '';
+      for (let i = 0; i < 28; i++) {
+        const bar = document.createElement('div');
+        bar.className = 'reels-wave-bar';
+        bar.style.animationDelay = (i * 0.035) + 's';
+        waveContainer.appendChild(bar);
+      }
+
+      isPlaying = true;
+      startLoopSequencer();
+      runReelsFlow();
+    }
+
+    // ===== BEAT SYNCED PULSES =====
+    function triggerBeatVisuals() {
+      // Pulse Phone viewport slightly
+      const frame = document.getElementById('phoneFrame');
+      frame.classList.add('beat-pulse');
+      setTimeout(() => frame.classList.remove('beat-pulse'), 200);
+
+      // Animate Music EQ bars overlay
+      const eqBars = document.querySelectorAll('.eq-bar');
+      eqBars.forEach(bar => {
+        const h = Math.floor(Math.random() * 12) + 3;
+        bar.style.height = h + 'px';
+      });
+    }
+
+    // ===== MAIN REELS LOOP SYSTEM =====
+    function runReelsFlow() {
+      if (!isPlaying) return;
+
+      // Handle loop completion
+      if (currentScene >= TOTAL_SCENES) {
+        stopLoopSequencer();
+        document.getElementById('replayOverlay').classList.add('visible');
+        return;
+      }
+
+      showActiveScene(currentScene);
+
+      sceneStartTime = performance.now();
+      const currentDuration = SCENE_DURATIONS[currentScene];
+
+      // Update segment indicators
+      const segments = document.querySelectorAll('.reels-progress-segment');
+      segments.forEach((seg, idx) => {
+        if (idx < currentScene) {
+          seg.classList.add('completed');
+          seg.querySelector('.reels-progress-fill').style.width = '100%';
+        } else if (idx > currentScene) {
+          seg.classList.remove('completed');
+          seg.querySelector('.reels-progress-fill').style.width = '0%';
+        }
+      });
+
+      // Animated segment fill
+      if (progressTimer) clearInterval(progressTimer);
+      const activeFill = segments[currentScene].querySelector('.reels-progress-fill');
+      progressTimer = setInterval(() => {
+        const elapsed = performance.now() - sceneStartTime;
+        const pct = Math.min((elapsed / currentDuration) * 100, 100);
+        activeFill.style.width = pct + '%';
+        if (pct >= 100) clearInterval(progressTimer);
+      }, 30);
+
+      // Set scene advance timeout
+      sceneTimer = setTimeout(() => {
+        currentScene++;
+        runReelsFlow();
+      }, currentDuration);
+    }
+
+    // Switch scenes with whip/shake animation and audio sweep
+    function showActiveScene(index) {
+      const frame = document.getElementById('phoneFrame');
+      const flash = document.getElementById('flashOverlay');
+      
+      // Transition effects
+      flash.classList.add('trigger');
+      frame.classList.add('shake', 'glitch-active');
+      playTransitionWhoosh();
+
+      setTimeout(() => {
+        flash.classList.remove('trigger');
+      }, 100);
+
+      setTimeout(() => {
+        frame.classList.remove('shake', 'glitch-active');
+      }, 400);
+
+      // Hide all scenes
+      document.querySelectorAll('.scene').forEach((sc, i) => {
+        sc.classList.remove('active', 'exit-up');
+        if (i < index) sc.classList.add('exit-up');
+      });
+
+      // Show active scene
+      const activeSc = document.getElementById(`scene-${index + 1}`);
+      activeSc.classList.add('active');
+
+      // Update cinema blurred background
+      document.getElementById('cinemaBackdrop').style.backgroundImage = `url(${SCENE_BACKDROPS[index]})`;
+
+      // Animate scene-specific components
+      runSceneAnimations(index + 1);
+
+      // Render & Pop Captions
+      renderKineticSubtitles(index);
+    }
+
+    // ===== SCENE SPECIFIC INTERACTIVE ANIMATIONS =====
+    function runSceneAnimations(sceneNum) {
+      // Clear out scene items
+      document.querySelectorAll('.floating-chat-bubble, .xp-slider-box, .feedback-pill, .floating-3d-card, .magnetic-cta-btn').forEach(el => el.classList.remove('visible'));
+      
+      // Reset radial paths
+      const radialCircle = document.getElementById('radialProgressCircle');
+      radialCircle.style.strokeDashoffset = '276';
+      document.getElementById('scoreValEl').textContent = '0%';
+      document.getElementById('gaugeSpark').classList.remove('explode');
+
+      // Reset gaze vectors
+      document.getElementById('gazeL').classList.remove('active');
+      document.getElementById('gazeR').classList.remove('active');
+
+      // Reset Wheel compass
+      const wheel = document.getElementById('jobWheel');
+      wheel.style.transform = `rotate(0deg)`;
+      document.getElementById('wheelGlow').classList.remove('active');
+
+      const scrollImg = document.getElementById('scrollImg1');
+      scrollImg.style.transform = `translateY(0)`;
+
+      switch (sceneNum) {
+        case 1:
+          // Scrolling mockup
+          setTimeout(() => {
+            scrollImg.style.transform = `translateY(-35%)`;
+          }, 600);
+
+          // Virtual cursor movement click
+          const cursor = document.getElementById('cursor1');
+          const ripple = document.getElementById('ripple1');
+          cursor.style.transform = `translate(140px, 120px)`;
+          ripple.classList.remove('pulse');
+
+          setTimeout(() => {
+            cursor.style.transform = `translate(110px, 80px)`;
+          }, 1500);
+
+          setTimeout(() => {
+            cursor.classList.add('click-act');
+            ripple.classList.add('pulse');
+            playBubblePlopSFX();
+            document.getElementById('chatBubble1').classList.add('visible');
+          }, 3000);
+
+          setTimeout(() => {
+            cursor.classList.remove('click-act');
+            cursor.style.transform = `translate(190px, 140px)`;
+            document.getElementById('chatBubble2').classList.add('visible');
+          }, 4500);
+          break;
+
+        case 2:
+          // Spin selector Compass
+          setTimeout(() => {
+            // Spin multiple rounds, lock at AI engineer segment (60deg relative)
+            // Wheel segments rotation: Segment 2 (AI Engineer) = 60deg. 
+            // Pointer is at the TOP (270deg). We want Segment 2 to align with pointer. 
+            // So we rotate by 270 - 60 = 210 degrees + 720 (2 rounds).
+            let targetRot = 720 + 210;
+            wheel.style.transform = `rotate(${targetRot}deg)`;
+            
+            // Play ticking sound while spinning
+            let tickCount = 0;
+            const ticksInterval = setInterval(() => {
+              playWheelTickSFX();
+              tickCount++;
+              if (tickCount > 10) clearInterval(ticksInterval);
+            }, 180);
+          }, 500);
+
+          // Lock in indicator
+          setTimeout(() => {
+            document.getElementById('wheelGlow').classList.add('active');
+            playSuccessChime();
+          }, 3000);
+
+          // Slider visual reveal
+          setTimeout(() => {
+            document.getElementById('xpBox2').classList.add('visible');
+            document.getElementById('xpSliderFill').style.width = '85%';
+          }, 4500);
+          break;
+
+        case 3:
+          // SVG Vector face tracker & telemetry readout
+          setTimeout(() => {
+            document.getElementById('gazeL').classList.add('active');
+            document.getElementById('gazeR').classList.add('active');
+          }, 800);
+
+          // Type out lines
+          document.querySelectorAll('.telemetry-line').forEach(line => line.classList.remove('type-in'));
+          setTimeout(() => document.getElementById('teleLine1').classList.add('type-in'), 600);
+          setTimeout(() => document.getElementById('teleLine2').classList.add('type-in'), 1600);
+          setTimeout(() => document.getElementById('teleLine3').classList.add('type-in'), 2800);
+          break;
+
+        case 4:
+          // Fill gauge, start sound riser
+          const score = 87;
+          const duration = 2000;
+          startRiserSynth(duration / 1000);
+
+          const circCircumference = 276;
+          const offset = circCircumference - (score / 100) * circCircumference;
+
+          setTimeout(() => {
+            radialCircle.style.strokeDashoffset = offset;
+          }, 300);
+
+          // Numeric count up
+          let startTime = null;
+          function countUp(timestamp) {
+            if (!startTime) startTime = timestamp;
+            const progress = timestamp - startTime;
+            const currentScore = Math.min(Math.round((progress / duration) * score), score);
+            document.getElementById('scoreValEl').textContent = `${currentScore}%`;
+            
+            if (progress < duration) {
+              requestAnimationFrame(countUp);
+            } else {
+              // Spark particles explosion
+              document.getElementById('gaugeSpark').classList.add('explode');
+              playSuccessChime();
+              
+              // Slide in Pills
+              setTimeout(() => document.getElementById('pillG1').classList.add('visible'), 200);
+              setTimeout(() => document.getElementById('pillG2').classList.add('visible'), 600);
+              setTimeout(() => document.getElementById('pillO3').classList.add('visible'), 1000);
+            }
+          }
+          requestAnimationFrame(countUp);
+          break;
+
+        case 5:
+          // Floating cards & CTA button
+          setTimeout(() => {
+            document.getElementById('ctaCardL').classList.add('visible');
+          }, 500);
+          setTimeout(() => {
+            document.getElementById('ctaCardR').classList.add('visible');
+          }, 1100);
+          setTimeout(() => {
+            document.getElementById('finalCtaBtn').classList.add('visible');
+            playSuccessChime();
+          }, 2000);
+          break;
+      }
+    }
+
+    // ===== KINETIC REELS SUBTITLES LOGIC =====
+    function renderKineticSubtitles(index) {
+      // Clear timers
+      wordTimers.forEach(t => clearTimeout(t));
+      wordTimers = [];
+
+      const wrap = document.getElementById('captionWrap');
+      wrap.innerHTML = '';
+
+      const text = SCRIPTS[index];
+      const words = text.split(" ");
+      const highlightConf = HIGHLIGHTS[index] || {};
+
+      // Append span words
+      const spans = words.map((w, wIdx) => {
+        const span = document.createElement('span');
+        span.className = 'kinetic-word';
+        
+        // Strip punctuation for trigger match
+        const cleanWord = w.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()?]/g,"");
+        
+        // Apply coloring based on presets
+        if (highlightConf[wIdx]) {
+          span.classList.add(`highlighted-${highlightConf[wIdx]}`);
+        }
+        span.textContent = w;
+        wrap.appendChild(span);
+        return { el: span, clean: cleanWord };
+      });
+
+      const currentDuration = SCENE_DURATIONS[index];
+      // Distribute word timings pacing
+      const pacing = currentDuration / (words.length + 1.5);
+
+      words.forEach((_, wIdx) => {
+        const timer = setTimeout(() => {
+          // Play click SFX on each pop
+          playWordClickSFX();
+
+          spans.forEach((item, spanIdx) => {
+            if (spanIdx === wIdx) {
+              item.el.classList.remove('pop-inactive');
+              item.el.classList.add('pop-active');
+              
+              // Trigger floating emoji burst if matches key words
+              if (EMOJI_TRIGGERS[item.clean]) {
+                spawnEmojiBurst(EMOJI_TRIGGERS[item.clean]);
+              }
+            } else if (spanIdx < wIdx) {
+              item.el.classList.remove('pop-active');
+              item.el.classList.add('pop-inactive');
+            } else {
+              item.el.classList.remove('pop-active', 'pop-inactive');
+            }
+          });
+        }, wIdx * pacing);
+        wordTimers.push(timer);
+      });
+    }
+
+    // Pop up float emojis behind subtitles
+    function spawnEmojiBurst(emoji) {
+      const container = document.getElementById('phoneViewport');
+      const particle = document.createElement('div');
+      particle.className = 'word-burst-emoji';
+      particle.textContent = emoji;
+
+      // Position near subtitles
+      particle.style.left = '45%';
+      particle.style.bottom = '145px';
+
+      // Set random movement vectors
+      const dx = (Math.random() * 80 - 40) + 'px';
+      const dy = (Math.random() * -100 - 40) + 'px';
+      const rot = (Math.random() * 60 - 30) + 'deg';
+      particle.style.setProperty('--dx', dx);
+      particle.style.setProperty('--dy', dy);
+      particle.style.setProperty('--rot', rot);
+
+      container.appendChild(particle);
+      setTimeout(() => particle.remove(), 1200);
+    }
+
+    // ===== INSTAGRAM SOCIAL INTERACTIONS INTERACTION =====
+    // Double tap to like phone screen
+    let lastTap = 0;
+    document.getElementById('phoneViewport').addEventListener('click', (e) => {
+      const currentTime = new Date().getTime();
+      const tapLength = currentTime - lastTap;
+      
+      if (tapLength < 300 && tapLength > 0) {
+        // Double tap liked
+        triggerReelsLike(e.clientX, e.clientY);
+        e.preventDefault();
+      }
+      lastTap = currentTime;
+    });
+
+    document.getElementById('reelsLikeBtn').addEventListener('click', (e) => {
+      triggerReelsLike();
+    });
+
+    function triggerReelsLike(x, y) {
+      const likeBtnWrap = document.getElementById('likeBtnWrap');
+      likeBtnWrap.classList.add('active');
+      playBubblePlopSFX();
+
+      // Increment fake like count
+      document.getElementById('likeCounter').textContent = "12.9K";
+
+      // Spawn heart floating visuals
+      const viewport = document.getElementById('phoneViewport');
+      const rect = viewport.getBoundingClientRect();
+
+      let spawnX, spawnY;
+      if (x !== undefined && y !== undefined) {
+        spawnX = x - rect.left;
+        spawnY = y - rect.top;
+      } else {
+        // default above button
+        spawnX = rect.width - 40;
+        spawnY = rect.height - 200;
+      }
+
+      for (let i = 0; i < 5; i++) {
+        const heart = document.createElement('span');
+        heart.className = 'material-symbols-outlined floating-heart';
+        heart.textContent = 'favorite';
+        
+        heart.style.left = spawnX + 'px';
+        heart.style.top = spawnY + 'px';
+        
+        // Random paths
+        const mx = (Math.random() * 40 - 20) + 'px';
+        const tx = (Math.random() * 120 - 60) + 'px';
+        const rot = (Math.random() * 40 - 20) + 'deg';
+        const frot = (Math.random() * 90 - 45) + 'deg';
+        
+        heart.style.setProperty('--mx', mx);
+        heart.style.setProperty('--tx', tx);
+        heart.style.setProperty('--rot', rot);
+        heart.style.setProperty('--frot', frot);
+        
+        viewport.appendChild(heart);
+        setTimeout(() => heart.remove(), 1000);
+      }
+    }
+
+    // Share link copy action
+    document.getElementById('shareBtnWrap').addEventListener('click', () => {
+      navigator.clipboard.writeText(window.location.href).then(() => {
+        playSuccessChime();
+        alert("Link copied! Share this reel showcase with your team. 🚀");
+      });
+    });
+
+    // ===== MIXER CONTROLS =====
+    const mixerTrigger = document.getElementById('mixerTriggerBtn');
+    const mixerDropdown = document.getElementById('mixerDropdown');
+    mixerTrigger.addEventListener('click', (e) => {
+      mixerDropdown.classList.toggle('active');
+      e.stopPropagation();
+    });
+
+    document.addEventListener('click', (e) => {
+      if (!mixerDropdown.contains(e.target) && e.target !== mixerTrigger) {
+        mixerDropdown.classList.remove('active');
+      }
+    });
+
+    document.getElementById('musicVolSlider').addEventListener('input', (e) => {
+      musicVolMultiplier = parseFloat(e.target.value);
+    });
+
+    document.getElementById('sfxVolSlider').addEventListener('input', (e) => {
+      sfxVol = parseFloat(e.target.value);
+    });
+
+    // ===== PARALLAX 3D TILT EFFECT =====
+    const wrapper = document.getElementById('showcase-wrapper');
+    const simulator = document.getElementById('phoneWrapper');
+    
+    wrapper.addEventListener('mousemove', (e) => {
+      const xAxis = (window.innerWidth / 2 - e.pageX) / 35;
+      const yAxis = (window.innerHeight / 2 - e.pageY) / 35;
+      simulator.style.transform = `rotateY(${xAxis}deg) rotateX(${-yAxis}deg) translateZ(20px)`;
+    });
+
+    wrapper.addEventListener('mouseleave', () => {
+      simulator.style.transform = `rotateY(0deg) rotateX(0deg) translateZ(0)`;
+    });
+
+    // ===== REPLAY / RESET =====
+    function restartReel() {
+      document.getElementById('replayOverlay').classList.remove('visible');
+      currentScene = 0;
+      isPlaying = true;
+      startLoopSequencer();
+      runReelsFlow();
+    }
+
+    // Keyboard support
+    document.addEventListener('keydown', (e) => {
+      if (e.key === ' ' || e.key === 'ArrowDown' || e.key === 'ArrowRight') {
+        clearTimeout(sceneTimer);
+        clearInterval(progressTimer);
+        if (currentScene < TOTAL_SCENES - 1) {
+          currentScene++;
+          runReelsFlow();
+        } else {
+          currentScene = 0;
+          runReelsFlow();
+        }
+        e.preventDefault();
+      }
+      if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') {
+        clearTimeout(sceneTimer);
+        clearInterval(progressTimer);
+        if (currentScene > 0) {
+          currentScene--;
+          runReelsFlow();
+        }
+        e.preventDefault();
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,30 @@
+.login-box-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: calc(100vh - 56px);
+}
+
+.login-box {
+    max-width: 500px;
+    width: 100%;
+}
+
+.forgot-password-link {
+    font-weight: normal;
+    font-size: 14px;
+    line-height: 18px;
+    color: blue;
+    cursor: pointer;
+    margin-top: -12px;
+    text-align: right;
+}
+
+.login-box-wrapper .btn-fill-primary {
+    min-width: 250px;
+    width: 100%;
+    margin-top: 24px;
+}
+.smallfont{
+    cursor: pointer;
+}

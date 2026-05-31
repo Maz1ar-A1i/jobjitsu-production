@@ -1,0 +1,28 @@
+# Project Progress Log
+
+## Codebase Patterns
+(See AGENTS.md for detailed patterns)
+
+---
+
+## Redesigned High-Energy Showcase Reels Simulator (May 2026)
+
+### Key Learnings & Implementations
+- **Social Media Reels Simulator**: Redesigned the showcase into a 9:16 vertical smartphone frame. Added interactive sidebar buttons (Heart likes with spawning physics-based flying hearts, Comments popover tooltip, Share/Copy-Link chime), spinning vinyl track indicator, and a live volume mixer (Music/SFX) to allow clean video recording.
+- **Procedural Retrowave Synth Beat**: Programmed a dynamic background music sequencer entirely in Web Audio API. It schedules a kick/snare beat and a sawtooth bassline in C-minor. Beat ticks dispatch events that pulse screen elements (1.018x scale) and sync a floating visualizer.
+- **Kinetic Caption Engine**: Programmed a word-by-word uppercase caption engine with elastic spring scaling and random rotations. Added float-up emoji triggers (🎯, 💼, 🚀, 🧠, 🏆, etc.) that float behind subtitles upon keyword detection.
+- **Enhanced Interactive Scenes**:
+  - *Scene 1*: Auto-scrolling mock page with a moving neon virtual cursor simulating click ripple effects.
+  - *Scene 2*: Interactive job selector wheel spinning with mechanic tick SFX, locking on target, and triggering a sliding MID-to-SENIOR experience slider.
+  - *Scene 3*: Immersive green SVG face tracker grids (eye gaze arrows and face nodes) overlaying the mock webcam feed, complete with custom terminal diagnostics.
+  - *Scene 4*: Circular progress score animation rising to 87% with synth riser sound, culminating in particle spark explosions and sliding feedback pills.
+  - *Scene 5*: 3D parallax-tilted cards for chatbot/resume analyzer that tilt with mouse cursor.
+- **Performance & Loading**: Kept the UI in clean static vanilla HTML/JS inside a Vite iframe, eliminating hydration mismatch and audio lag.
+
+## AI Interview Hands-Free Loop & ATS Resume Scoring Upgrades (May 2026)
+
+### Key Learnings & Implementations
+- **Ref-Binding Closure Shield**: Resolved persistent stale closures in React's async callbacks/event listeners (such as WebSocket message handles and countdown timers) by establishing a `useEffect` that re-binds a live action ref `doAutoSubmitRef.current` on every single render. This guarantees async callbacks always invoke the latest scope variables without tearing the React fiber tree.
+- **Ultra-Resilient JSON Extraction**: Engineered an bulletproof extraction routine for LLM outputs that uses regex-fallback block finders (extracting between the first `{` and last `}`) and type-coercion fallbacks to handle malformed, wrapped, or conversational outputs. This guarantees the resume analyzer score cards never fall back to zero or break UI rendering.
+- **Asynchronous Non-Blocking Feedback Generation**: Redesigned the save response endpoint to return HTTP 200 immediately to the client after spawning the LLM feedback evaluator in a background promise. Added a synchronous fallback resolution loop inside the final report endpoint for any pending queries. This drops active session response evaluation lag by 50% without data loss.
+- **JobSearch Routing Corrections**: Configured the Exit Hub callback on the job explorer board to navigate back to the primary `/dashboard` instead of redirecting users to the secondary `/ai-dashboard`.

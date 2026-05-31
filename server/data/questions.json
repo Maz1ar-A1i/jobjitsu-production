@@ -1,0 +1,47 @@
+[
+  {
+    "category": "introduction",
+    "questions": [
+      "Tell me about yourself.",
+      "How did you hear about this position?",
+      "What do you know about our company?",
+      "Why do you want this job?"
+    ]
+  },
+  {
+    "category": "teamwork",
+    "questions": [
+      "Describe a time you worked in a team. What was your role?",
+      "How do you handle conflict with a coworker?",
+      "Tell me about a time you had to collaborate with someone whose personality was different from yours.",
+      "What makes a team successful in your opinion?"
+    ]
+  },
+  {
+    "category": "leadership",
+    "questions": [
+      "Tell me about a time you led a project.",
+      "How do you motivate your team members?",
+      "Describe a situation where you had to make a difficult decision as a leader.",
+      "How do you delegate tasks to others?"
+    ]
+  },
+  {
+    "category": "problem-solving",
+    "questions": [
+      "Describe a difficult problem you faced and how you solved it.",
+      "Tell me about a time you failed. How did you handle it?",
+      "How do you approach a task that you've never done before?",
+      "Describe a situation where you had to think outside the box to solve a problem."
+    ]
+  },
+  {
+    "category": "experience",
+    "questions": [
+      "What are your greatest professional strengths?",
+      "What do you consider to be your weaknesses?",
+      "Tell me about your most significant professional achievement.",
+      "Where do you see yourself in five years?"
+    ]
+  }
+]
