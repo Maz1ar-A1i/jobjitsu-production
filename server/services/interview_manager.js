@@ -200,12 +200,17 @@ const generateQuestion = async (role, domain, difficulty, history = [], question
 const generateFeedback = async (question, answer, domain, difficulty, mlMetrics = {}) => {
 
     // Handle empty/skipped answers
-    const isEmptyAnswer = !answer || answer.trim().length < 10 || answer.includes('No answer provided');
+    const trimmed = (answer || '').trim();
+    const isEmptyAnswer = !answer
+        || trimmed.length < 10
+        || trimmed.includes('No answer provided')
+        || trimmed.includes('No audible response detected')
+        || trimmed === '(No answer provided)';
 
     if (isEmptyAnswer) {
         return {
-            feedback: 'The candidate did not provide a substantive answer to this question.',
-            score: 10,
+            feedback: 'The candidate did not provide an answer to this question.',
+            score: 0,
             strengths: [],
             improvements: ['Provide a clear, structured answer', 'Use specific examples from experience'],
         };

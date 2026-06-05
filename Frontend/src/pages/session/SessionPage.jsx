@@ -1054,7 +1054,7 @@ const SessionPage = () => {
                                                                     <div className="flex items-center justify-between">
                                                                         <span className="text-[10px] font-bold text-primary uppercase tracking-widest">AI Assessment</span>
                                                                         <div className="flex items-baseline gap-1">
-                                                                            <span className="text-2xl font-headline font-extrabold text-secondary">{q.response.analysis.clarityScore || 0}</span>
+                                                                            <span className={`text-2xl font-headline font-extrabold ${(q.response.analysis.clarityScore ?? 0) === 0 ? 'text-red-400' : 'text-secondary'}`}>{q.response.analysis.clarityScore ?? 0}</span>
                                                                             <span className="text-white/20 text-sm">/100</span>
                                                                         </div>
                                                                     </div>

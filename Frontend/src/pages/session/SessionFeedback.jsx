@@ -211,13 +211,19 @@ const SessionFeedback = () => {
 
                                     <div className="grid grid-cols-1 md:grid-cols-4 gap-8 pt-8 border-t border-white/5 items-center">
                                         {/* Metric: Score */}
-                                        <div className="flex flex-col gap-1 bg-white/5 p-4 rounded-2xl border border-white/5 text-center md:text-left">
-                                            <span className="text-[10px] font-black text-white/30 uppercase tracking-[0.2em]">Response Weight</span>
-                                            <div className="flex items-baseline justify-center md:justify-start gap-1">
-                                                <span className="text-4xl font-headline font-black text-secondary tracking-tighter">{q.response.analysis.score}</span>
-                                                <span className="text-[12px] text-white/20 font-bold">pts</span>
-                                            </div>
-                                        </div>
+                                        {(() => {
+                                            const displayScore = q.response.analysis.clarityScore ?? q.response.analysis.score ?? 0;
+                                            const scoreColor = displayScore === 0 ? 'text-red-400' : 'text-secondary';
+                                            return (
+                                                <div className="flex flex-col gap-1 bg-white/5 p-4 rounded-2xl border border-white/5 text-center md:text-left">
+                                                    <span className="text-[10px] font-black text-white/30 uppercase tracking-[0.2em]">Response Weight</span>
+                                                    <div className="flex items-baseline justify-center md:justify-start gap-1">
+                                                        <span className={`text-4xl font-headline font-black tracking-tighter ${scoreColor}`}>{displayScore}</span>
+                                                        <span className="text-[12px] text-white/20 font-bold">pts</span>
+                                                    </div>
+                                                </div>
+                                            );
+                                        })()}
 
                                         {/* Metric: Behavioral Feedback */}
                                         <div className="md:col-span-3">

@@ -57,6 +57,13 @@ const saveResponse = async (req, res) => {
             voiceTone: voiceParams.tone || 'neutral'
         };
 
+        // Detect empty/skipped answers early
+        const transcriptText = (response_data.transcript || '').trim();
+        const isEmptyAnswer = !transcriptText
+            || transcriptText.length < 10
+            || transcriptText.includes('No answer provided')
+            || transcriptText.includes('No audible response detected');
+
         const questionEntry = {
             avatar_id,
             question_text,
@@ -64,9 +71,10 @@ const saveResponse = async (req, res) => {
                 ...response_data,
                 respondedAt: new Date(),
                 analysis: {
-                    clarityScore: 70, // Temporary default
+                    clarityScore: 0, // Starts at 0, updated by background feedback
+                    score: 0,        // Consistent with clarityScore
                     confidenceScore: 0.9, 
-                    technicalAccuracy: 0.7,
+                    technicalAccuracy: 0,
 
                     // ML visual feedback mapping
                     sentiment: faceParams.expression || 'neutral',
@@ -74,10 +82,10 @@ const saveResponse = async (req, res) => {
                     eyeContact: faceParams.eye_contact === 'looking at camera' ? 1.0 : (faceParams.eye_contact === 'looking away' ? 0.3 : 0.7),
                     posture: faceParams.head_pose || 'centered',
 
-                    feedback: 'Processing feedback in background...',
+                    feedback: isEmptyAnswer ? 'The candidate did not provide an answer to this question.' : 'Processing feedback in background...',
                     strengths: [],
-                    improvements: [],
-                    processing: true // Flag to identify background completion state
+                    improvements: isEmptyAnswer ? ['Provide a clear, structured answer', 'Use specific examples from experience'] : [],
+                    processing: !isEmptyAnswer // Skip background processing for empty answers
                 },
             },
         };
@@ -225,6 +233,34 @@ const getSessionFeedback = async (req, res) => {
                 } catch (e) {
                     console.error('[SessionFeedback Sync Error]:', e);
                     q.response.analysis.processing = false;
+                    hasModified = true;
+                }
+            }
+        }
+        if (hasModified) {
+            session.markModified('questions');
+            await session.save();
+        }
+
+        // Retroactively correct scores for empty/unanswered questions
+        // This fixes old sessions that were saved with score > 0 for empty answers
+        for (let i = 0; i < session.questions.length; i++) {
+            const q = session.questions[i];
+            const transcript = (q.response?.transcript || '').trim();
+            const isEmpty = !transcript
+                || transcript.length < 10
+                || transcript.includes('No answer provided')
+                || transcript.includes('No audible response detected');
+
+            if (isEmpty && q.response?.analysis) {
+                if (q.response.analysis.clarityScore !== 0 || q.response.analysis.score !== 0) {
+                    q.response.analysis.clarityScore = 0;
+                    q.response.analysis.score = 0;
+                    q.response.analysis.technicalAccuracy = 0;
+                    q.response.analysis.confidenceScore = 0;
+                    q.response.analysis.feedback = 'The candidate did not provide an answer to this question.';
+                    q.response.analysis.strengths = [];
+                    q.response.analysis.improvements = ['Provide a clear, structured answer', 'Use specific examples from experience'];
                     hasModified = true;
                 }
             }
